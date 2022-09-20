@@ -3,20 +3,18 @@ import React, { useState, useEffect } from "react";
 import Form from "./components/Form";
 import TodoList from "./components/TodoList";
 function App() {
-  const [inputValue, setInputValue] = useState("");
   const [todos, setTodos] = useState([]);
   const [status, setStatus] = useState("all");
   const [filtered, setFiltered] = useState([]);
 
   useEffect(() => {
     getLocalTodos();
-  },[])
+  }, []);
 
   useEffect(() => {
     filterHandler();
     saveLocalTodos();
   }, [todos, status]);
-
 
   const filterHandler = () => {
     switch (status) {
@@ -33,18 +31,39 @@ function App() {
   };
 
   const saveLocalTodos = () => {
-      localStorage.setItem('todos',JSON.stringify(todos))
+    localStorage.setItem("todos", JSON.stringify(todos));
   };
 
-  const getLocalTodos= () => {
-    if(localStorage.getItem('todos') === null){
-      localStorage.setItem('todos', JSON.stringify([]))
-    }
-    else {
-      let todoLocal = JSON.parse(localStorage.getItem("todos"))
+  const getLocalTodos = () => {
+    if (localStorage.getItem("todos") === null) {
+      localStorage.setItem("todos", JSON.stringify([]));
+    } else {
+      let todoLocal = JSON.parse(localStorage.getItem("todos"));
       setTodos(todoLocal);
     }
-  }
+  };
+  const handlerOnDelete = (item) => {
+    setTodos(todos.filter((el) => el.id !== item.id));
+  };
+  const handlerOnChange = (item) => {
+    setTodos(
+      todos.map((data) => {
+        if (data.id === item.id) {
+          return {
+            ...data,
+            completed: item.completed,
+          };
+        }
+        return data;
+      })
+    );
+  };
+  const onSubmit = (item) => {
+    setTodos([
+      ...todos,
+      { text: item.text, completed: false, id: Math.random() * 1000 },
+    ]);
+  };
   return (
     <div className="App">
       <header>
@@ -54,10 +73,15 @@ function App() {
         setStatus={setStatus}
         setTodos={setTodos}
         todos={todos}
-        setInputValue={setInputValue}
-        inputValue={inputValue}
+        onSubmit={onSubmit}
       />
-      <TodoList setTodos={setTodos} todos={todos}   filtered = {filtered} />
+      <TodoList
+        setTodos={setTodos}
+        handlerOnDelete={handlerOnDelete}
+        todos={todos}
+        filtered={filtered}
+        handlerOnChange={handlerOnChange}
+      />
     </div>
   );
 }

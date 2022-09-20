@@ -1,15 +1,16 @@
-import React from "react";
+import React,{useState} from "react";
 
-export default function Form({ setInputValue, setTodos, todos, inputValue , setStatus}) {
+export default function Form({  setStatus, onSubmit }) {
+  const [inputValue, setInputValue] = useState("");
+
   const inputValueHandler = (e) => {
     setInputValue(e.target.value);
   };
   const valueSubmitHandler = (e) => {
     e.preventDefault();
-    setTodos([
-        ...todos, {text: inputValue, completed: false, id:Math.random() * 1000},
-    ]);
+    onSubmit({text: inputValue, completed: false,   id:Math.random() * 1000})
     setInputValue("");
+
   };
 
   const statusHandler = (e) => {

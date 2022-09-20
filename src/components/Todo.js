@@ -1,26 +1,24 @@
 import React from "react";
 
-export default function Todo({ text, item, todos, setTodos }) {
+export default function Todo({ text, id, completed, handlerOnChange,handlerOnDelete}) {
   const deleteHandler = () => {
-    setTodos(todos.filter((el) => el.id !== item.id));
+   handlerOnDelete(
+    {
+      id,
+      completed:!completed
+    }
+   )
   };
 
   const saveHandler = () => {
-    setTodos(
-      todos.map((data) => {
-        if (data.id === item.id) {
-          return {
-            ...data,
-            completed: !data.completed,
-          };
-        }
-        return data;
-      })
-    );
+    handlerOnChange({
+      id,
+      completed:!completed
+    })
   };
   return (
     <div className="todo-items">
-      <li className={`todo-item ${item.completed ? "completed" : ''}`}> {text} </li>
+      <li className={`todo-item ${completed ? "completed" : ''}`}> {text} </li>
       <button className="save_button" onClick={saveHandler}>
         <i className="fas fa-check"></i>
       </button>
